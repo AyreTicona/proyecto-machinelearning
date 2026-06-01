@@ -110,7 +110,7 @@ async function loopImagen() {
 // ============================================
 // MÓDULO AUDIO
 // ============================================
-const URL_AUDIO = "./modelos/audio/";
+const URL_AUDIO = 'https://ayreticona.github.io/proyecto-machinelearning/modelos/audio/';
 let recognizerAudio = null;
 
 async function cargarModeloAudio() {
@@ -244,7 +244,7 @@ async function analizarMicrofono() {
 // ============================================
 // MÓDULO POSTURA — WEBCAM CON SELECTOR
 // ============================================
-const URL_POSTURA = "./modelos/postura/";
+const URL_POSTURA = 'https://ayreticona.github.io/proyecto-machinelearning/modelos/postura/';
 
 let modeloPostura = null;
 let webcamPostura = null;
