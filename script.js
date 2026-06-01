@@ -110,7 +110,7 @@ async function loopImagen() {
 // ============================================
 // MÓDULO AUDIO
 // ============================================
-const URL_AUDIO = "http://127.0.0.1:5500/modelos/audio/";
+const URL_AUDIO = "./model_audio/";
 let recognizerAudio = null;
 
 async function cargarModeloAudio() {
@@ -244,7 +244,7 @@ async function analizarMicrofono() {
 // ============================================
 // MÓDULO POSTURA — WEBCAM CON SELECTOR
 // ============================================
-const URL_POSTURA = 'http://127.0.0.1:5500/modelos/postura/';
+const URL_POSTURA = "./model_postura/";
 
 let modeloPostura = null;
 let webcamPostura = null;
