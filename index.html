@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Proyecto Machine Learning</title>
+  <link rel="stylesheet" href="style.css" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/pose@0.8/dist/teachablemachine-pose.min.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/@tensorflow-models/speech-commands@0.5.4/dist/speech-commands.min.js"></script>
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <div class="nav-logo">
+      <span class="logo-dot"></span>
+      ML Clasificador
+    </div>
+    <div class="nav-info">SENATI · 5to Semestre · Taller de ML</div>
+  </nav>
+
+  <header class="hero">
+    <h1 class="hero-title">Sistema de<br><span>Clasificación</span><br>con IA</h1>
+    <p class="hero-sub">Selecciona un módulo para comenzar el análisis en tiempo real mediante modelos entrenados con
+      Machine Learning.</p>
+  </header>
+
+  <main class="main">
+    <p class="section-label">— Módulos disponibles</p>
+
+    <div class="cards-grid">
+
+      <div class="card" id="card-imagen" onclick="toggleModulo('imagen')">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+            <circle cx="8.5" cy="8.5" r="1.5" />
+            <path d="M21 15l-5-5L5 21" />
+          </svg>
+        </div>
+        <div class="card-body">
+          <h2 class="card-title">Imágenes</h2>
+          <p class="card-desc">Clasifica el género de una persona (Hombre / Mujer) en tiempo real con la cámara.</p>
+          <div class="card-tags">
+            <span class="tag">Clasificación</span>
+            <span class="tag">Género</span>
+          </div>
+        </div>
+        <div class="card-arrow">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </div>
+      </div>
+
+      <div class="card" id="card-audio" onclick="toggleModulo('audio')">
+        <div class="card-icon icon-audio">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+            <line x1="12" y1="19" x2="12" y2="23" />
+            <line x1="8" y1="23" x2="16" y2="23" />
+          </svg>
+        </div>
+        <div class="card-body">
+          <h2 class="card-title">Audio</h2>
+          <p class="card-desc">Analiza un archivo de audio y clasifica el tipo de sonido o comando de voz.</p>
+          <div class="card-tags">
+            <span class="tag tag-audio">Reconocimiento</span>
+            <span class="tag tag-audio">Sonido</span>
+          </div>
+        </div>
+        <div class="card-arrow">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </div>
+      </div>
+
+      <div class="card" id="card-postura" onclick="toggleModulo('postura')">
+        <div class="card-icon icon-postura">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="5" r="2" />
+            <path d="M12 7v6l-3 4m3-4l3 4" />
+            <path d="M9 11H7m10 0h-2" />
+          </svg>
+        </div>
+        <div class="card-body">
+          <h2 class="card-title">Postura</h2>
+          <p class="card-desc">Detecta y clasifica la postura corporal en tiempo real usando la cámara web.</p>
+          <div class="card-tags">
+            <span class="tag tag-postura">Tiempo real</span>
+            <span class="tag tag-postura">Cámara</span>
+          </div>
+        </div>
+        <div class="card-arrow">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- MÓDULO IMÁGENES -->
+    <section class="modulo" id="modulo-imagen">
+      <div class="modulo-header">
+        <div class="modulo-titulo">
+          <span class="modulo-dot"></span>
+          Módulo — Imágenes
+        </div>
+        <button class="modulo-cerrar" onclick="toggleModulo('imagen')">✕ Cerrar</button>
+      </div>
+      <div class="modulo-content modulo-postura-content">
+        <div class="camara-wrap">
+          <video id="webcam-imagen" autoplay playsinline></video>
+          <div class="camara-overlay" id="camara-overlay-imagen">
+            <div class="selector-camara" id="selector-camara-imagen"
+              style="display:none; flex-direction:column; align-items:center; gap:12px;">
+              <select id="select-camara-imagen" class="select-camara"></select>
+              <button class="btn-camara" onclick="iniciarWebcamImagen()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M23 7l-7 5 7 5V7z" />
+                  <rect x="1" y="5" width="15" height="14" rx="2" />
+                </svg>
+                Iniciar cámara
+              </button>
+            </div>
+            <button class="btn-camara" id="btn-seleccionar-imagen" onclick="mostrarSelectorImagen()">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 7l-7 5 7 5V7z" />
+                <rect x="1" y="5" width="15" height="14" rx="2" />
+              </svg>
+              Seleccionar cámara
+            </button>
+          </div>
+        </div>
+        <div class="resultado-box visible" id="resultado-imagen">
+          <p class="resultado-label">Resultado en tiempo real</p>
+          <div class="resultado-valor" id="resultado-clase">—</div>
+          <div class="barra-wrap">
+            <div class="barra-fill" id="barra-confianza"></div>
+          </div>
+          <p class="resultado-confianza" id="texto-confianza">Confianza: —</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- MÓDULO AUDIO -->
+    <section class="modulo" id="modulo-audio">
+      <div class="modulo-header">
+        <div class="modulo-titulo">
+          <span class="modulo-dot dot-audio"></span>
+          Módulo — Audio
+        </div>
+        <button class="modulo-cerrar" onclick="toggleModulo('audio')">✕ Cerrar</button>
+      </div>
+      <div class="modulo-content">
+        <div class="upload-area upload-audio" onclick="document.getElementById('audio-input').click()">
+          <div class="upload-icon icon-audio-color">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18V5l12-2v13" />
+              <circle cx="6" cy="18" r="3" />
+              <circle cx="18" cy="16" r="3" />
+            </svg>
+          </div>
+          <p class="upload-texto">Haz clic para seleccionar un archivo de audio</p>
+          <p class="upload-sub">WAV, MP3 · Máx 10MB</p>
+          <input type="file" id="audio-input" accept="audio/*" hidden onchange="cargarAudio(event)" />
+        </div>
+        <div class="audio-player" id="audio-player">
+          <audio id="audio-element" controls></audio>
+          <button class="btn-analizar btn-audio" onclick="analizarAudio()">Analizar con IA</button>
+        </div>
+        <button id="btn-microfono" class="btn-microfono" onclick="analizarMicrofono()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z" />
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+            <line x1="12" y1="19" x2="12" y2="22" />
+          </svg>
+          Usar Micrófono
+        </button>
+        <div class="resultado-box resultado-audio" id="resultado-audio">
+          <p class="resultado-label">Resultado del análisis</p>
+          <div class="resultado-valor resultado-audio-val" id="resultado-audio-clase">—</div>
+          <div class="barra-wrap">
+            <div class="barra-fill barra-audio" id="barra-audio"></div>
+          </div>
+          <p class="resultado-confianza" id="texto-audio-confianza">Confianza: —</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- MÓDULO POSTURA -->
+    <section class="modulo" id="modulo-postura">
+      <div class="modulo-header">
+        <div class="modulo-titulo">
+          <span class="modulo-dot dot-postura"></span>
+          Módulo — Postura
+        </div>
+        <button class="modulo-cerrar" onclick="toggleModulo('postura')">✕ Cerrar</button>
+      </div>
+      <div class="modulo-content modulo-postura-content">
+        <div class="camara-wrap">
+          <video id="webcam" autoplay playsinline></video>
+          <canvas id="canvas-postura"></canvas>
+          <div class="camara-overlay" id="camara-overlay">
+            <div class="selector-camara" id="selector-camara-postura"
+              style="display:none; flex-direction:column; align-items:center; gap:12px;">
+              <select id="select-camara-postura" class="select-camara"></select>
+              <button class="btn-camara" onclick="iniciarCamara()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M23 7l-7 5 7 5V7z" />
+                  <rect x="1" y="5" width="15" height="14" rx="2" />
+                </svg>
+                Iniciar cámara
+              </button>
+            </div>
+            <button class="btn-camara" id="btn-seleccionar-postura" onclick="mostrarSelectorPostura()">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 7l-7 5 7 5V7z" />
+                <rect x="1" y="5" width="15" height="14" rx="2" />
+              </svg>
+              Seleccionar cámara
+            </button>
+          </div>
+        </div>
+        <div class="postura-resultados" id="postura-resultados">
+          <p class="resultado-label">Detección en tiempo real</p>
+          <div id="postura-lista"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+  <script src="script.js"></script>
+</body>
+
+</html>
